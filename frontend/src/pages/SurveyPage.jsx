@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Card, CardContent, Typography, Button, Stack } from "@mui/material";
-import { ToggleButton, ToggleButtonGroup, TextField } from "@mui/material";
+import { ToggleButton, TextField } from "@mui/material";
 import {
   Dialog,
   DialogTitle,
@@ -43,24 +43,27 @@ const SurveyPage = () => {
               <Typography gutterBottom>
                 Rate (1 to {currentQuestion.scale})
               </Typography>
-              <ToggleButtonGroup
-                exclusive
-                value={answers[currentQuestion.id] || null}
-                onChange={(e, newValue) => {
-                  if (newValue !== null) {
-                    setAnswers({ ...answers, [currentQuestion.id]: newValue });
-                  }
-                }}
-              >
+              <div className="flex flex-wrap gap-3 mb-6">
                 {Array.from(
                   { length: currentQuestion.scale },
                   (_, i) => i + 1
                 ).map((num) => (
-                  <ToggleButton key={num} value={num}>
+                  <Button
+                    key={num}
+                    variant={
+                      answers[currentQuestion.id] === num
+                        ? "contained"
+                        : "outlined"
+                    }
+                    onClick={() =>
+                      setAnswers({ ...answers, [currentQuestion.id]: num })
+                    }
+                    className="rounded-full w-1 h-8 min-w-0 p-0"
+                  >
                     {num}
-                  </ToggleButton>
+                  </Button>
                 ))}
-              </ToggleButtonGroup>
+              </div>
             </div>
           )}
 
@@ -114,9 +117,8 @@ const SurveyPage = () => {
                   setCurrentIndex((i) => i + 1);
                 }
               }}
-              disabled={currentIndex === questions.length - 1}
             >
-              Next
+              {currentIndex === questions.length - 1 ? "Submit" : "Next"}
             </Button>
           </Stack>
           <Dialog open={showConfirm} onClose={() => setShowConfirm(false)}>
